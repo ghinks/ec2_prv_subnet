@@ -84,6 +84,7 @@ resource "aws_vpc_endpoint" "ssmmsgs-endpt" {
   service_name        = "com.amazonaws.${var.region}.ssmmessages"
 }
 resource "aws_instance" "ec2_ssm_instance" {
+  count         = var.instance_count
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.small"
   # hard coded for private subnet
@@ -93,6 +94,6 @@ resource "aws_instance" "ec2_ssm_instance" {
   vpc_security_group_ids = [aws_security_group.allow_session_manager_sg.id]
   subnet_id              = aws_subnet.ec2_subnet.id
   tags = {
-    Name = "ec2_ssm_instance_for_load_testing"
+    Name = "ec2_ssm_instance_for_load_testing-${count.index}"
   }
 }
