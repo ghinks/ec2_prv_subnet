@@ -1,26 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.66"
-    }
-  }
-
-  required_version = ">= 1.2.0"
-}
-
-variable "region" {
-  description = "The region where the resources will be created"
-  default     = "us-west-2"
-}
-variable "availability_zone" {
-  description = "The availability zone where the resources will be created"
-  default     = "us-west-2a"
-}
-provider "aws" {
-  region = var.region
-}
-
 resource "aws_iam_role" "ssm_role" {
   name = "ssm_role"
 
@@ -107,9 +84,7 @@ resource "aws_vpc_endpoint" "ssmmsgs-endpt" {
   service_name        = "com.amazonaws.${var.region}.ssmmessages"
 }
 resource "aws_instance" "ec2_ssm_instance" {
-  #ami           = "ami-830c94e3"
-  # ubuntu 20.04 in us-west-2, yes its different in each region!
-  ami           = "ami-008fe2fc65df48dac"
+  ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.small"
   # hard coded for private subnet
   associate_public_ip_address = false
